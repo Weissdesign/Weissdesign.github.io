@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>郝于越 | Yuyue Hao</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Tokens ── */
+    :root {
+      --c-bg:        #ffffff;
+      --c-bg-alt:    #f5f5f7;
+      --c-surface:   #ffffff;
+      --c-surface2:  #f5f5f7;
+      --c-border:    rgba(0,0,0,.08);
+      --c-text:      #1d1d1f;
+      --c-muted:     #6e6e73;
+      --c-subtle:    #86868b;
+      --c-accent:    #0071e3;
+      --c-accent-h:  #0077ed;
+      --nav-h:       52px;
+      --r:           18px;
+      --shadow-sm:   0 2px 12px rgba(0,0,0,.06);
+      --shadow-md:   0 4px 24px rgba(0,0,0,.09);
+      --shadow-lg:   0 8px 40px rgba(0,0,0,.12);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+      background: var(--c-bg);
+      color: var(--c-text);
+      line-height: 1.75;
+      font-size: 15px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(0,0,0,.15); border-radius: 3px; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: var(--nav-h);
+      background: rgba(255,255,255,.82);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid rgba(0,0,0,.1);
+    }
+    .nav-inner {
+      max-width: 1080px; margin: 0 auto; padding: 0 2rem;
+      height: 100%; display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-size: .88rem; font-weight: 600; color: var(--c-text);
+      letter-spacing: -.01em; text-decoration: none;
+    }
+    .nav-logo span { color: var(--c-accent); }
+    .nav-right { display: flex; align-items: center; gap: 2rem; }
+    .nav-links { display: flex; gap: 1.6rem; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: var(--c-muted); font-size: .8rem;
+      font-weight: 400; transition: color .15s;
+    }
+    .nav-links a:hover { color: var(--c-text); }
+
+    /* ── LANG TOGGLE ── */
+    .lang-toggle {
+      display: flex; background: rgba(0,0,0,.05);
+      border-radius: 999px; padding: 3px; gap: 2px;
+    }
+    .lang-btn {
+      padding: .2rem .68rem; border-radius: 999px; border: none; background: transparent;
+      font-size: .73rem; font-weight: 500; cursor: pointer; color: var(--c-muted);
+      font-family: inherit; transition: all .2s; letter-spacing: .01em;
+    }
+    .lang-btn.active { background: var(--c-accent); color: #fff; }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 1080px; margin: 0 auto; padding: 0 2rem; }
+    section {
+      padding: 3.5rem 0;
+      scroll-margin-top: var(--nav-h);
+    }
+    section + section { border-top: 1px solid var(--c-border); }
+
+    /* ── SECTION LABEL ── */
+    .sec-label {
+      display: block; font-size: .68rem; font-weight: 600;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--c-accent); margin-bottom: .8rem;
+    }
+    h2.section-title {
+      font-size: 2rem; font-weight: 700; color: var(--c-text);
+      margin-bottom: 2.5rem; line-height: 1.2;
+      letter-spacing: -.03em;
+    }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh; display: flex; align-items: center;
+      padding-top: calc(var(--nav-h) + 4rem);
+      background: var(--c-bg);
+    }
+    .hero-grid {
+      display: grid; grid-template-columns: 1fr 174px;
+      gap: 4rem; align-items: start;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: .45rem;
+      color: var(--c-accent); font-size: .8rem; font-weight: 500;
+      margin-bottom: 1.4rem; letter-spacing: .01em;
+    }
+    .hero-eyebrow svg { width: 11px; height: 11px; opacity: .8; }
+    /* avatar inline with name */
+    .hero-name-row {
+      display: flex; align-items: center; gap: 1.2rem; margin-bottom: .25rem;
+    }
+    .hero-avatar-sm {
+      width: 72px; height: 72px; border-radius: 50%; overflow: hidden; flex-shrink: 0;
+      box-shadow: 0 2px 12px rgba(0,0,0,.12);
+    }
+    .hero-avatar-sm img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .hero-name {
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      font-weight: 700; line-height: 1.05;
+      letter-spacing: -.04em; color: var(--c-text); margin: 0;
+    }
+    .hero-name-cn {
+      font-size: 1rem; color: var(--c-muted); font-weight: 400;
+      margin-bottom: 1.4rem; letter-spacing: .02em; margin-top: .2rem;
+    }
+    /* scholar stats panel */
+    .scholar-panel {
+      padding: .8rem 0; display: flex; flex-direction: column; gap: 0;
+      align-self: start;
+      margin-top: 2.8rem;
+      margin-left: 1.5rem;
+    }
+    .scholar-panel-title {
+      font-size: .6rem; font-weight: 600; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--c-subtle); margin-bottom: .9rem;
+    }
+    .scholar-stat {
+      padding: .65rem 0;
+      border-bottom: 1px solid var(--c-border);
+      display: flex; flex-direction: column; gap: .15rem;
+    }
+    .scholar-stat:last-child { border-bottom: none; padding-bottom: 0; }
+    .scholar-stat:first-of-type { padding-top: 0; }
+    .stat-value {
+      font-size: 1.35rem; font-weight: 700; color: var(--c-accent);
+      letter-spacing: -.02em; line-height: 1; font-variant-numeric: tabular-nums;
+    }
+    .stat-value.loading { opacity: .3; }
+    .stat-label {
+      font-size: .68rem; color: var(--c-muted); font-weight: 400; letter-spacing: .01em;
+    }
+    .scholar-link {
+      margin-top: .9rem; font-size: .67rem; color: var(--c-accent);
+      text-decoration: none; display: inline-flex; align-items: center; gap: .3rem;
+    }
+    .scholar-link:hover { text-decoration: underline; }
+    .hero-bio {
+      color: var(--c-muted); max-width: 540px; font-size: .95rem;
+      line-height: 1.85; margin-bottom: 2rem; font-weight: 300;
+    }
+    .hero-bio strong { color: var(--c-text); font-weight: 500; }
+    .hero-bio em { font-style: italic; }
+    .contact-chips { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 2rem; }
+    .chip {
+      display: inline-flex; align-items: center; gap: .4rem;
+      font-size: .78rem; color: var(--c-muted); padding: .38rem .9rem;
+      background: var(--c-bg-alt);
+      border-radius: 999px; text-decoration: none; transition: all .2s;
+      font-weight: 400;
+    }
+    .chip:hover { background: rgba(0,113,227,.08); color: var(--c-accent); }
+    .chip svg { flex-shrink: 0; }
+    .kw-row { display: flex; flex-wrap: wrap; gap: .35rem; }
+    .kw {
+      font-size: .72rem; color: var(--c-muted); padding: .22rem .65rem;
+      background: var(--c-bg-alt); border-radius: 999px;
+      font-weight: 400;
+    }
+
+    /* Avatar */
+    .avatar-block { position: relative; flex-shrink: 0; }
+    .avatar-ring {
+      width: 210px; height: 210px; border-radius: 50%;
+      background: linear-gradient(145deg, #e8e8ed 0%, #d1d1d6 100%);
+      padding: 3px; box-shadow: var(--shadow-lg);
+    }
+    .avatar-inner { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; }
+    .avatar-inner img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    /* ── NEWS ── */
+    .news-stack { display: flex; flex-direction: column; gap: 1px; background: var(--c-border); border-radius: var(--r); overflow: hidden; }
+    .news-item {
+      display: flex; gap: 1.4rem; align-items: flex-start;
+      padding: 1.2rem 1.6rem;
+      background: var(--c-surface);
+      transition: background .15s;
+    }
+    .news-item:hover { background: var(--c-bg-alt); }
+    .news-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--c-accent); flex-shrink: 0; margin-top: .62rem; }
+    .news-badge {
+      font-size: .68rem; font-weight: 600; letter-spacing: .04em;
+      color: var(--c-accent);
+      white-space: nowrap; margin-top: .18rem; min-width: 52px;
+    }
+    .news-text { font-size: .88rem; color: var(--c-muted); line-height: 1.7; font-weight: 300; }
+    .news-text strong { color: var(--c-text); font-weight: 500; }
+    .news-text em { color: var(--c-text); font-style: italic; }
+
+    /* ── AREAS ── */
+    .area-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--c-border); border-radius: var(--r); overflow: hidden; }
+    .area-card {
+      position: relative; padding: 2.8rem 2.2rem; min-height: 280px;
+      background: var(--c-surface);
+      transition: background .2s;
+      overflow: hidden;
+      display: flex; flex-direction: column; justify-content: flex-end;
+    }
+    .area-card::before {
+      content: ''; position: absolute; inset: 0;
+      background-size: cover; background-position: center;
+      opacity: .1; transition: opacity .3s;
+    }
+    .area-card:hover::before { opacity: 1; }
+    .area-card:hover { background: transparent; }
+    .area-card:hover .area-num,
+    .area-card:hover .area-name,
+    .area-card:hover .area-desc { color: #ffffff; }
+    .area-card > * { position: relative; z-index: 1; }
+    .area-card-01::before { background-image: url('images/FocusAreas01.jpg'); }
+    .area-card-02::before { background-image: url('images/FocusAreas02.jpg'); }
+    .area-card-03::before { background-image: url('images/FocusAreas03.jpg'); }
+    .area-card-04::before { background-image: url('images/FocusAreas04.jpg'); }
+    .area-num { font-size: .82rem; font-weight: 600; color: var(--c-accent); letter-spacing: .1em; margin-bottom: .55rem; transition: color .3s; }
+    .area-name { font-weight: 600; font-size: 1.05rem; color: var(--c-text); margin-bottom: .35rem; letter-spacing: -.01em; transition: color .3s; }
+    .area-desc { font-size: .8rem; color: var(--c-muted); line-height: 1.65; font-weight: 300; transition: color .3s; }
+    .reviewer-note {
+      margin-top: 1.5rem; font-size: .82rem; color: var(--c-muted); line-height: 1.75;
+      padding: 1rem 1.4rem; background: var(--c-bg-alt); border-radius: 12px;
+      font-weight: 300;
+    }
+
+    /* ── PUBLICATIONS ── */
+    .pub-filters { display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: 2rem; }
+    .filter-btn {
+      background: var(--c-bg-alt); border: none; border-radius: 999px;
+      padding: .32rem .9rem; font-size: .76rem; cursor: pointer;
+      color: var(--c-muted); font-weight: 400; transition: all .2s; font-family: inherit;
+    }
+    .filter-btn:hover { background: rgba(0,113,227,.08); color: var(--c-accent); }
+    .filter-btn.active { background: var(--c-accent); color: #fff; }
+
+    .pub-list { display: flex; flex-direction: column; }
+    .pub-item {
+      display: grid; grid-template-columns: 52px 1fr auto;
+      gap: 1.5rem; align-items: start;
+      padding: 1.4rem 0;
+      border-bottom: 1px solid var(--c-border);
+      transition: all .15s;
+    }
+    .pub-item:last-child { border-bottom: none; }
+    .pub-item:hover { padding-left: .5rem; padding-right: .5rem; margin: 0 -.5rem; background: var(--c-bg-alt); border-radius: 12px; }
+    .pub-idx {
+      font-size: .72rem; font-weight: 500; color: var(--c-accent);
+      font-variant-numeric: tabular-nums; padding-top: .2rem;
+    }
+    .pub-title {
+      font-size: .93rem; font-weight: 500; color: var(--c-text);
+      line-height: 1.5; margin-bottom: .35rem; letter-spacing: -.01em;
+    }
+    .pub-title a { color: inherit; text-decoration: none; }
+    .pub-title a:hover { color: var(--c-accent); }
+    .pub-meta { display: flex; flex-wrap: wrap; align-items: center; gap: .45rem; }
+    .pub-venue { font-size: .78rem; color: var(--c-accent); font-style: italic; font-weight: 400; }
+    .pub-sep { color: var(--c-border); }
+    .pub-tags { display: flex; gap: .3rem; flex-wrap: wrap; }
+    .pub-tag {
+      font-size: .68rem; color: var(--c-muted); background: var(--c-bg-alt);
+      padding: .1rem .42rem; border-radius: 4px; font-weight: 400;
+    }
+    .pub-year-badge {
+      font-size: .7rem; font-weight: 500; color: var(--c-subtle);
+      letter-spacing: .02em; padding-top: .25rem; white-space: nowrap;
+    }
+
+    /* ── EDUCATION ── */
+    .timeline { position: relative; padding-left: 2rem; }
+    .timeline::before {
+      content: ''; position: absolute; left: 5px; top: 6px; bottom: 6px;
+      width: 1px; background: var(--c-border);
+    }
+    .tl-item { position: relative; padding-bottom: 2.5rem; }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-dot {
+      position: absolute; left: -2rem; top: 5px;
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--c-accent); border: 2px solid var(--c-bg);
+      box-shadow: 0 0 0 3px rgba(0,113,227,.2);
+    }
+    .tl-period { font-size: .72rem; font-weight: 500; color: var(--c-accent); letter-spacing: .04em; margin-bottom: .3rem; }
+    .tl-degree { font-size: 1rem; font-weight: 600; color: var(--c-text); margin-bottom: .15rem; letter-spacing: -.01em; }
+    .tl-school { font-size: .83rem; color: var(--c-muted); font-weight: 300; }
+
+    /* ── PROJECTS ── */
+    .project-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .8rem; }
+    .project-card {
+      background: var(--c-surface); border-radius: 0;
+      overflow: hidden; transition: all .3s cubic-bezier(.4,0,.2,1);
+      display: flex; flex-direction: column;
+    }
+    .project-card:hover { transform: scale(1.02) translateY(-3px); }
+    .project-img { width: 100%; height: 240px; object-fit: cover; display: block; flex-shrink: 0; }
+    .project-body { padding: 1.1rem 1.2rem 1.4rem; display: flex; flex-direction: column; gap: .4rem; flex: 1; }
+    .project-fund {
+      font-size: .67rem; font-weight: 600; letter-spacing: .05em;
+      color: var(--c-accent);
+      display: inline-block; width: fit-content;
+      text-transform: uppercase;
+    }
+    .project-title { font-weight: 500; font-size: .86rem; line-height: 1.5; color: var(--c-text); letter-spacing: -.01em; }
+    .project-date { font-size: .75rem; color: var(--c-muted); margin-top: auto; font-weight: 300; }
+
+    /* ── CONTACT ── */
+    .contact-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      background: var(--c-border); border-radius: var(--r); overflow: hidden;
+    }
+    .contact-box {
+      padding: 1.6rem 1.8rem;
+      background: var(--c-bg);
+      border-right: 1px solid var(--c-border);
+      transition: background .15s;
+    }
+    .contact-box:last-child { border-right: none; }
+    .contact-box:hover { background: var(--c-bg-alt); }
+    .contact-box.span2 { grid-column: span 1; }
+    .contact-icon { font-size: 1.1rem; margin-bottom: .6rem; }
+    .contact-label { font-size: .65rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--c-subtle); margin-bottom: .3rem; }
+    .contact-val { font-size: .85rem; font-weight: 400; color: var(--c-text); }
+    .contact-val a { color: var(--c-accent); text-decoration: none; }
+    .contact-val a:hover { text-decoration: underline; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--c-bg-alt);
+      border-top: 1px solid var(--c-border); padding: 2.5rem 0;
+      text-align: center; font-size: .75rem; color: var(--c-subtle);
+    }
+    footer a { color: var(--c-subtle); text-decoration: none; }
+    footer a:hover { color: var(--c-text); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .avatar-block { display: none; }
+      .nav-links { display: none; }
+      .contact-grid { grid-template-columns: 1fr 1fr; }
+      .contact-box.span2 { grid-column: span 1; }
+      .pub-item { grid-template-columns: 40px 1fr; }
+      .pub-year-badge { display: none; }
+      .project-grid { grid-template-columns: repeat(2, 1fr); }
+      .area-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <div class="nav-inner">
+    <a href="#hero" class="nav-logo">Yuyue <span>Hao</span></a>
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="#hero"         data-zh="关于" data-en="About">关于</a></li>
+        <li><a href="#news"         data-zh="动态" data-en="News">动态</a></li>
+        <li><a href="#education"    data-zh="经历" data-en="Education">经历</a></li>
+        <li><a href="#publications" data-zh="论文" data-en="Publications">论文</a></li>
+        <li><a href="#projects"     data-zh="项目" data-en="Projects">项目</a></li>
+        <li><a href="#contact"      data-zh="联系" data-en="Contact">联系</a></li>
+      </ul>
+      <div class="lang-toggle">
+        <button class="lang-btn active" id="btn-zh" onclick="setLang('zh')">中文</button>
+        <button class="lang-btn"        id="btn-en" onclick="setLang('en')">EN</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section id="hero">
+  <div class="hero-glow"></div>
+  <div class="container">
+    <div class="hero-grid">
+      <div style="margin-left: -2rem;">
+        <div class="hero-eyebrow">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+          <span data-zh="清华大学美术学院 · 设计未来课题组" data-en="Academy of Arts & Design, Tsinghua University · Design Futures Lab">清华大学美术学院 · 设计未来课题组</span>
+        </div>
+        <div class="hero-name-row">
+          <div class="hero-avatar-sm"><img src="images/avatar.png" alt="Yuyue Hao" /></div>
+          <h1 class="hero-name" data-zh="郝于越" data-en="Yuyue Hao">郝于越</h1>
+        </div>
+        <p class="hero-name-cn" data-zh="Yuyue Hao · 博士后 水木学者" data-en="郝于越 · Postdoc · Shuimu Scholar">Yuyue Hao · 博士后 水木学者</p>
+        <p class="hero-bio"
+           data-zh="研究方向为<strong>智能界面设计</strong>与<strong>应急人类行为</strong>，聚焦人车交互、人智协作与智能体设计。关注应急情境下人类的认知心理与行为及人机协作关系，综合运用文献计量与荟萃分析、行为实验与模拟实验及定量数据分析方法。现担任《国际减少灾害风险杂志》《国际信息技术与决策杂志》《应急与危机管理杂志》《IET 交通系统》《国际人因工效学》等 SCI 期刊审稿人。"
+           data-en="Research focuses on <strong>intelligent interface design</strong> and <strong>emergency human behavior</strong>, with emphasis on human–vehicle interaction, human–AI collaboration, and agent design. Employing bibliometrics, meta-analysis, behavioral experiments, and quantitative analysis. Serving as reviewer for <em>International Journal of Disaster Risk Reduction</em>, <em>IJITDM</em>, <em>Journal of Contingencies and Crisis Management</em>, <em>IET Intelligent Transport Systems</em>, and <em>International Journal of Industrial Ergonomics</em>.">
+          研究方向为<strong>智能界面设计</strong>与<strong>应急人类行为</strong>，聚焦人车交互、人智协作与智能体设计。关注应急情境下人类的认知心理与行为及人机协作关系，综合运用文献计量与荟萃分析、行为实验与模拟实验及定量数据分析方法。现担任《国际减少灾害风险杂志》《国际信息技术与决策杂志》《应急与危机管理杂志》《IET 交通系统》《国际人因工效学》等 SCI 期刊审稿人。
+        </p>
+        <div class="contact-chips">
+          <a class="chip" href="mailto:weissbj@mail.tsinghua.edu.cn">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
+            weissbj@mail.tsinghua.edu.cn
+          </a>
+          <span class="chip">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.86 19.86 0 0 1 3.08 4.18 2 2 0 0 1 5.09 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L9.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            +86 185 1605 7821
+          </span>
+        </div>
+        <div class="kw-row">
+          <span class="kw" data-zh="应急人类行为"  data-en="Emergency Human Behavior">应急人类行为</span>
+          <span class="kw" data-zh="智能人机交互"  data-en="Intelligent HCI">智能人机交互</span>
+          <span class="kw" data-zh="人智协作"      data-en="Human–AI Collaboration">人智协作</span>
+          <span class="kw" data-zh="风险感知"      data-en="Risk Perception">风险感知</span>
+          <span class="kw" data-zh="信息设计"      data-en="Information Design">信息设计</span>
+          <span class="kw" data-zh="自动驾驶"      data-en="Autonomous Vehicles">自动驾驶</span>
+          <span class="kw" data-zh="文献计量"      data-en="Bibliometrics">文献计量</span>
+          <span class="kw" data-zh="智能体设计"    data-en="Agent Design">智能体设计</span>
+        </div>
+      </div>
+      <div class="scholar-panel">
+        <div class="scholar-panel-title" data-zh="Google Scholar 统计" data-en="Google Scholar Stats">Google Scholar 统计</div>
+        <div class="scholar-stat">
+          <span class="stat-value loading" id="stat-citations">—</span>
+          <span class="stat-label" data-zh="引用次数" data-en="Citations">引用次数</span>
+        </div>
+        <div class="scholar-stat">
+          <span class="stat-value loading" id="stat-hindex">—</span>
+          <span class="stat-label">h-index</span>
+        </div>
+        <div class="scholar-stat">
+          <span class="stat-value loading" id="stat-i10">—</span>
+          <span class="stat-label">i10-index</span>
+        </div>
+        <a class="scholar-link" href="https://scholar.google.com/citations?user=p0hiOhQAAAAJ" target="_blank" rel="noopener">
+          <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          <span data-zh="查看 Google Scholar 主页" data-en="View Google Scholar Profile">查看 Google Scholar 主页</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ NEWS ══ -->
+<section id="news">
+  <div class="container">
+    <p class="sec-label" data-zh="最新动态" data-en="Latest News">最新动态</p>
+    <h2 class="section-title" data-zh="近期进展" data-en="Recent Updates">近期进展</h2>
+    <div class="news-stack">
+      <div class="news-item">
+        <span class="news-badge">2026.05</span>
+        <span class="news-text"
+          data-zh="发表 SCI 期刊论文 <em>The Double-Edged Sword of Artificial Empathy: User Resistance and Acceptance in Emotional vs. Functional Interactions</em>"
+          data-en="Published SCI journal paper <em>The Double-Edged Sword of Artificial Empathy: User Resistance and Acceptance in Emotional vs. Functional Interactions</em>">
+          发表 SCI 期刊论文 <em>The Double-Edged Sword of Artificial Empathy: User Resistance and Acceptance in Emotional vs. Functional Interactions</em></span>
+      </div>
+      <div class="news-item">
+        <span class="news-badge">2026.04</span>
+        <span class="news-text"
+          data-zh="发表 CSSCI 期刊论文《风险感知与恐惧情绪：面向风险情绪的设计干预路径研究》"
+          data-en="Published CSSCI journal paper: Risk Perception and Fear Emotion: Design Intervention Pathways for Risk Emotion">
+          发表 CSSCI 期刊论文《风险感知与恐惧情绪：面向风险情绪的设计干预路径研究》</span>
+      </div>
+      <div class="news-item">
+        <span class="news-badge">2025.07</span>
+        <span class="news-text"
+          data-zh="荣获 <strong>清华大学水木学者</strong> 称号 — 清华大学博士后最高荣誉之一。"
+          data-en="Honored as <strong>Shuimu Scholar</strong> at Tsinghua University — one of the most prestigious postdoctoral fellowships at Tsinghua.">
+          荣获 <strong>清华大学水木学者</strong> 称号 — 清华大学博士后最高荣誉之一。</span>
+      </div>
+      <div class="news-item">
+        <span class="news-badge">2025.03</span>
+        <span class="news-text"
+          data-zh="在研项目：<em>中国艺术设计类高校专业学生人工智能素养研究与教育白皮书</em>（2025.03 —）"
+          data-en="Ongoing project: <em>White Paper on AI Literacy for Art & Design Students in China</em> (2025.03 —)">
+          在研项目：<em>中国艺术设计类高校专业学生人工智能素养研究与教育白皮书</em>（2025.03 —）</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ EDUCATION ══ -->
+<section id="education">
+  <div class="container">
+    <p class="sec-label" data-zh="教育经历" data-en="Education">教育经历</p>
+    <h2 class="section-title" data-zh="学术履历" data-en="Academic Career">学术履历</h2>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-period">2025.01 — <span data-zh="至今" data-en="Present">至今</span></div>
+        <div class="tl-degree" data-zh="博士后研究员" data-en="Postdoctoral Researcher">博士后研究员</div>
+        <div class="tl-school" data-zh="清华大学美术学院" data-en="Academy of Arts & Design, Tsinghua University">清华大学美术学院</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-period">2019.09 — 2024.07</div>
+        <div class="tl-degree" data-zh="设计学博士" data-en="Ph.D. in Design">设计学博士</div>
+        <div class="tl-school" data-zh="湖南大学设计艺术学院" data-en="School of Design, Hunan University">湖南大学设计艺术学院</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ ABOUT ══ -->
+<section id="about">
+  <div class="container">
+    <p class="sec-label" data-zh="研究领域" data-en="Research Areas">研究领域</p>
+    <h2 class="section-title" data-zh="关注方向" data-en="Focus Areas">关注方向</h2>
+    <div class="area-grid">
+      <div class="area-card area-card-01">
+        <div class="area-num">01</div>
+        <div class="area-name" data-zh="应急人类行为" data-en="Emergency Human Behavior">应急人类行为</div>
+        <div class="area-desc" data-zh="灾害与紧急情况下人类的认知、决策与行为响应机制" data-en="Cognition, decision-making, and behavioral responses during disasters and emergencies">灾害与紧急情况下人类的认知、决策与行为响应机制</div>
+      </div>
+      <div class="area-card area-card-02">
+        <div class="area-num">02</div>
+        <div class="area-name" data-zh="人智协作" data-en="Human–AI Collaboration">人智协作</div>
+        <div class="area-desc" data-zh="智能系统与自主智能体中的交互设计与信任动态" data-en="Interaction design and trust dynamics in intelligent systems and autonomous agents">智能系统与自主智能体中的交互设计与信任动态</div>
+      </div>
+      <div class="area-card area-card-03">
+        <div class="area-num">03</div>
+        <div class="area-name" data-zh="人车交互" data-en="Human–Vehicle Interaction">人车交互</div>
+        <div class="area-desc" data-zh="自动驾驶与自动化车辆的安全感知、信任与用户体验" data-en="Safety perception, trust, and UX in automated and autonomous vehicles">自动驾驶与自动化车辆的安全感知、信任与用户体验</div>
+      </div>
+      <div class="area-card area-card-04">
+        <div class="area-num">04</div>
+        <div class="area-name" data-zh="信息设计" data-en="Information Design">信息设计</div>
+        <div class="area-desc" data-zh="安全关键场景中的预警系统、风险传播与界面设计" data-en="Warning systems, risk communication, and interface design for safety-critical contexts">安全关键场景中的预警系统、风险传播与界面设计</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PUBLICATIONS ══ -->
+<section id="publications">
+  <div class="container">
+    <p class="sec-label" data-zh="学术成果" data-en="Academic Output">学术成果</p>
+    <h2 class="section-title" data-zh="发表论文" data-en="Publications">发表论文</h2>
+    <div class="pub-filters">
+      <button class="filter-btn active" onclick="filterPubs('all',this)"      data-zh="全部"     data-en="All">全部</button>
+      <button class="filter-btn"        onclick="filterPubs('hci',this)"      data-zh="HCI / AI" data-en="HCI / AI">HCI / AI</button>
+      <button class="filter-btn"        onclick="filterPubs('emergency',this)" data-zh="应急"    data-en="Emergency">应急</button>
+      <button class="filter-btn"        onclick="filterPubs('av',this)"       data-zh="自动驾驶" data-en="Autonomous Vehicles">自动驾驶</button>
+      <button class="filter-btn"        onclick="filterPubs('biblio',this)"   data-zh="文献计量" data-en="Bibliometrics">文献计量</button>
+    </div>
+    <div class="pub-list" id="pub-list">
+
+      <!-- 01 -->
+      <div class="pub-item" data-cat="hci">
+        <div class="pub-idx">#01</div>
+        <div class="pub-body">
+          <div class="pub-title"><a href="https://doi.org/10.1093/iwc/iwag020" target="_blank" rel="noopener">The Double-Edged Sword of Artificial Empathy: User Resistance and Acceptance in Emotional vs. Functional Interactions</a></div>
+          <div class="pub-meta">
+            <span class="pub-venue">Interacting with Computers</span>
+            <span class="pub-sep">·</span>
+            <span class="pub-tags">
+              <span class="pub-tag" data-zh="人工共情" data-en="AI Empathy">人工共情</span>
+              <span class="pub-tag" data-zh="情感服务" data-en="Emotional Service">情感服务</span>
+              <span class="pub-tag" data-zh="用户抵制" data-en="User Resistance">用户抵制</span>
+            </span>
+          </div>
+        </div>
+        <div class="pub-year-badge">2026</div>
+      </div>
+
+      <!-- 02 -->
+      <div class="pub-item" data-cat="emergency">
+        <div class="pub-idx">#02</div>
+        <div class="pub-body">
+          <div class="pub-title"
+               data-zh="风险感知与恐惧情绪：面向风险情绪的设计干预路径研究"
+               data-en="Risk Perception and Fear Emotion: Design Intervention Pathways for Risk Emotion">
+            风险感知与恐惧情绪：面向风险情绪的设计干预路径研究
+          </div>
+          <div class="pub-meta">
+            <span class="pub-venue">工业工程设计</span>
+            <span class="pub-sep">·</span>
+            <span class="pub-tags">
+              <span class="pub-tag" data-zh="风险感知" data-en="Risk Perception">风险感知</span>
+              <span class="pub-tag" data-zh="风险情绪" data-en="Risk Emotion">风险情绪</span>
+            </span>
+          </div>
+        </div>
+        <div class="pub-year-badge">2026</div>
+      </div>
+
+      <!-- 03 -->
+      <div class="pub-item" data-cat="emergency">
+        <div class="pub-idx">#03</div>
+        <div class="pub-body">
+          <div class="pub-title">
+            <a href="https://doi.org/10.1016/j.ssci.2025.106736" target="_blank" rel="noopener">
+              Social norms or individual experience? Which affects individual risk perception of disaster warnings
+            </a>
+          </div>
+          <div class="pub-meta">
+            <span class="pub-venue">Safety Science</span>
+            <span class="pub-sep">·</span>
+            <span class="pub-tags">
+              <span class="pub-tag" data-zh="灾害预警" data-en="Disaster Warning">灾害预警</span>
+              <span class="pub-tag" data-zh="响应行为" data-en="Behavioral Response">响应行为</span>
+            </span>
+          </div>
+        </div>
+        <div class="pub-year-badge">2025</div>
+      </div>
+
+      <!-- 04 -->
+      <div class="pub-item" data-cat="biblio">
+        <div class="pub-idx">#04</div>
+        <div class="pub-body">
+          <div class="pub-title">
+            <a href="https://doi.org/10.1016/j.eiar.2025.107823" target="_blank" rel="noopener">
+              Global evolution of research on life cycle assessment: A data-driven visualization of collaboration, frontier identification, and future trend
+            </a>
+          </div>
+          <div class="pub-meta">
+            <span class="pub-venue">Environmental Impact Assessment Review</span>
+            <span class="pub-sep">·</span>
+            <span class="pub-tags">
+              <span class="pub-tag" data-zh="文献计量" data-en="Bibliometrics">文献计量</span>
+              <span class="pub-tag" data-zh="生命周期" data-en="LCA">生命周期</span>
+            </span>
+          </div>
+        </div>
+        <div class="pub-year-badge">2025</div>
+      </div>
+
+      <!-- 05 -->
+      <div class="pub-item" data-cat="emergency">
+        <div class="pub-idx">#05</div>
+        <div class="pub-body">
+          <div class="pub-title">
+            <a href="https://doi.org/10.1038/s41598-025-89214-5" target="_blank" rel="noopener">
+              The effects of warning design features on risk perception and performance in remote emergency response
+            </a>
+          </div>
+          <div class="pub-meta">
+            <span class="pub-venue">Scientific Reports</span>
+            <span class="pub-sep">·</span>
+            <span class="pub-tags">
+              <span class="pub-tag" data-zh="应急设计" data-en="Emergency Design">应急设计</span>
+              <span class="pub-tag" data-zh="信息设计" data-en="Information Design">信息设计</span>
+            </span>
+          </div>
+        </div>
+        <div class="pub-year-badge">2025</div>
+      </div>
+
+      <!-- 06 -->
+      <div class="pub-item" data-cat="emergency">
+        <div class="pub-idx">#06</div>
+        <div class="pub-body">
+          <div class="pub-title">
+            <a href="https://doi.org/10.1016/j.displa.2025.102876" target="_blank" rel="noopener">
+              How warning content and persuasive strategy influence risk perception in remote fire monitoring: An empirical study
+            </a>
+          </div>
+          <div class="pub-meta">
+            <span class="pub-venue">Displays</span>
+            <span class="pub-sep">·</span>
+            <span class="pub-tags">
+              <span class="pub-tag" data-zh="信息界面" data-en="Information Interface">信息界面</span>
+              <span class="pub-tag" data-zh="实证研究" data-en="Empirical Study">实证研究</span>
+            </span>
+          </div>
+        </div>
+        <div class="pub-year-badge">2025</div>
+      </div>
+
+      <!-- 07 -->
+      <div class="pub-item" data-cat="emergency">
+        <div class="pub-idx">#07</div>
+        <div class="pub-body">
+          <div class="pub-title">
+            <a href="https://doi.org/10.1016/j.jenvman.2023.118920" target="_blank" rel="noopener">
+              Meta-analyses of motivational factors of response to natural disaster
+            </a>
+          </div>
+          <div class="pub-meta">
+            <span class="pub-venue">Journal of Environmental Management</span>
+            <span class="pub-sep">·</span>
+            <span class="pub-tags">
+              <span class="pub-tag" data-zh="元分析" data-en="Meta-analysis">元分析</span>
+              <span class="pub-tag" data-zh="自然灾害" data-en="Natural Disaster">自然灾害</span>
+            </span>
+          </div>
+        </div>
+        <div class="pub-year-badge">2023</div>
+      </div>
+
+      <!-- 08 -->
+      <div class="pub-item" data-cat="av">
+        <div class="pub-idx">#08</div>
+        <div class="pub-body">
+          <div class="pub-title">
+            <a href="https://doi.org/10.1002/hfm.20987" target="_blank" rel="noopener">
+              How does people's trust in automated vehicles change after automation errors occur? An empirical study on dynamic trust in automated driving
+            </a>
+          </div>
+          <div class="pub-meta">
+            <span class="pub-venue">Human Factors and Ergonomics in Manufacturing &amp; Service Industries</span>
+            <span class="pub-sep">·</span>
+            <span class="pub-tags">
+              <span class="pub-tag" data-zh="自动驾驶" data-en="Automated Driving">自动驾驶</span>
+              <span class="pub-tag" data-zh="信任感" data-en="Trust">信任感</span>
+            </span>
+          </div>
+        </div>
+        <div class="pub-year-badge">2023</div>
+      </div>
+
+      <!-- 09 -->
+      <div class="pub-item" data-cat="biblio">
+        <div class="pub-idx">#09</div>
+        <div class="pub-body">
+          <div class="pub-title">
+            <a href="https://doi.org/10.3390/ijerph192315775" target="_blank" rel="noopener">
+              Mapping the global evolution and research directions of information seeking, sharing and communication in disasters: a bibliometric study
+            </a>
+          </div>
+          <div class="pub-meta">
+            <span class="pub-venue">International Journal of Environmental Research and Public Health</span>
+            <span class="pub-sep">·</span>
+            <span class="pub-tags">
+              <span class="pub-tag" data-zh="文献计量" data-en="Bibliometrics">文献计量</span>
+              <span class="pub-tag" data-zh="信息行为" data-en="Info Behavior">信息行为</span>
+            </span>
+          </div>
+        </div>
+        <div class="pub-year-badge">2022</div>
+      </div>
+
+      <!-- 10 -->
+      <div class="pub-item" data-cat="av">
+        <div class="pub-idx">#10</div>
+        <div class="pub-body">
+          <div class="pub-title">
+            <a href="https://doi.org/10.1080/10447318.2021.1885641" target="_blank" rel="noopener">
+              How people perceive and expect safety in autonomous vehicles: An empirical study for risk sensitivity and risk-related feelings
+            </a>
+          </div>
+          <div class="pub-meta">
+            <span class="pub-venue">International Journal of Human–Computer Interaction</span>
+            <span class="pub-sep">·</span>
+            <span class="pub-tags">
+              <span class="pub-tag" data-zh="感知安全" data-en="Safety Perception">感知安全</span>
+              <span class="pub-tag" data-zh="自动驾驶" data-en="Autonomous Vehicles">自动驾驶</span>
+            </span>
+          </div>
+        </div>
+        <div class="pub-year-badge">2021</div>
+      </div>
+
+      <!-- 11 -->
+      <div class="pub-item" data-cat="biblio">
+        <div class="pub-idx">#11</div>
+        <div class="pub-body">
+          <div class="pub-title">A bibliometric analysis and social network analysis on ergonomics studies of emergency equipment</div>
+          <div class="pub-meta">
+            <span class="pub-venue">HCI International 2020</span>
+            <span class="pub-sep">·</span>
+            <span class="pub-tags">
+              <span class="pub-tag" data-zh="文献计量" data-en="Bibliometrics">文献计量</span>
+              <span class="pub-tag" data-zh="应急装备" data-en="Emergency Equipment">应急装备</span>
+            </span>
+          </div>
+        </div>
+        <div class="pub-year-badge">2020</div>
+      </div>
+
+      <!-- 12 -->
+      <div class="pub-item" data-cat="hci">
+        <div class="pub-idx">#12</div>
+        <div class="pub-body">
+          <div class="pub-title"
+               data-zh="自主传播环境下交互视觉体验的设计研究"
+               data-en="Design Research on Interactive Visual Experience in Autonomous Communication Environments">
+            自主传播环境下交互视觉体验的设计研究
+          </div>
+          <div class="pub-meta">
+            <span class="pub-venue">包装工程</span>
+            <span class="pub-sep">·</span>
+            <span class="pub-tags">
+              <span class="pub-tag" data-zh="交互体验" data-en="Interactive Experience">交互体验</span>
+            </span>
+          </div>
+        </div>
+        <div class="pub-year-badge">2019</div>
+      </div>
+
+      <!-- 13 -->
+      <div class="pub-item" data-cat="hci">
+        <div class="pub-idx">#13</div>
+        <div class="pub-body">
+          <div class="pub-title"
+               data-zh="移动智能产品设计用户体验模型研究"
+               data-en="User Experience Model Research for Mobile Intelligent Product Design">
+            移动智能产品设计用户体验模型研究
+          </div>
+          <div class="pub-meta">
+            <span class="pub-venue">设计</span>
+            <span class="pub-sep">·</span>
+            <span class="pub-tags">
+              <span class="pub-tag" data-zh="用户体验" data-en="UX">用户体验</span>
+              <span class="pub-tag" data-zh="智能产品" data-en="Smart Products">智能产品</span>
+            </span>
+          </div>
+        </div>
+        <div class="pub-year-badge">2018</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ PROJECTS ══ -->
+<section id="projects">
+  <div class="container">
+    <p class="sec-label" data-zh="项目经验" data-en="Research Projects">项目经验</p>
+    <h2 class="section-title" data-zh="科研项目" data-en="Selected Projects">科研项目</h2>
+    <div class="project-grid">
+      <div class="project-card">
+        <img class="project-img" src="images/project01.png" alt="project01" />
+        <div class="project-body">
+          <span class="project-fund" data-zh="清华大学攀峰工程" data-en="Tsinghua Peak Program">清华大学攀峰工程</span>
+          <div class="project-title" data-zh="中国艺术设计学生人工智能素养研究" data-en="AI Literacy Research for Art & Design Students in China">中国艺术设计学生人工智能素养研究</div>
+          <div class="project-date" data-zh="截止 2025 年 6 月" data-en="By June 2025">截止 2025 年 6 月</div>
+        </div>
+      </div>
+      <div class="project-card">
+        <img class="project-img" src="images/project02.png" alt="project02" />
+        <div class="project-body">
+          <span class="project-fund" data-zh="湖南省重点研发计划" data-en="Hunan Province Key R&D">湖南省重点研发计划</span>
+          <div class="project-title" data-zh="智慧微型消防应急站关键技术研发" data-en="Smart Micro Fire Emergency Station R&D">智慧微型消防应急站关键技术研发</div>
+          <div class="project-date" data-zh="截止 2023 年 3 月" data-en="By March 2023">截止 2023 年 3 月</div>
+        </div>
+      </div>
+      <div class="project-card">
+        <img class="project-img" src="images/project03.png" alt="project03" />
+        <div class="project-body">
+          <span class="project-fund" data-zh="华为横向项目" data-en="Huawei Collaboration">华为横向项目</span>
+          <div class="project-title" data-zh="智能网络运维用户体验设计研究" data-en="UX Design for Intelligent Network Operations">智能网络运维用户体验设计研究</div>
+          <div class="project-date" data-zh="截止 2021 年 12 月" data-en="By December 2021">截止 2021 年 12 月</div>
+        </div>
+      </div>
+      <div class="project-card">
+        <img class="project-img" src="images/project04.png" alt="project04" />
+        <div class="project-body">
+          <span class="project-fund" data-zh="横向项目" data-en="Industry Collaboration">横向项目</span>
+          <div class="project-title" data-zh="汽车智能交互体验设计研究" data-en="In-Vehicle Intelligent Interaction Design">汽车智能交互体验设计研究</div>
+          <div class="project-date" data-zh="截止 2020 年 12 月" data-en="By December 2020">截止 2020 年 12 月</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CONTACT ══ -->
+<section id="contact">
+  <div class="container">
+    <p class="sec-label" data-zh="联系方式" data-en="Contact">联系方式</p>
+    <h2 class="section-title" data-zh="取得联系" data-en="Get in Touch">取得联系</h2>
+    <div class="contact-grid">
+      <div class="contact-box">
+        <div class="contact-icon">✉️</div>
+        <div class="contact-label" data-zh="电子邮箱" data-en="Email">电子邮箱</div>
+        <div class="contact-val"><a href="mailto:weissbj@mail.tsinghua.edu.cn">weissbj@mail.tsinghua.edu.cn</a></div>
+      </div>
+      <div class="contact-box">
+        <div class="contact-icon">📞</div>
+        <div class="contact-label" data-zh="联系电话" data-en="Phone">联系电话</div>
+        <div class="contact-val">+86 185 1605 7821</div>
+      </div>
+      <div class="contact-box">
+        <div class="contact-icon">🏛️</div>
+        <div class="contact-label" data-zh="工作单位" data-en="Institution">工作单位</div>
+        <div class="contact-val" data-zh="清华大学" data-en="Tsinghua University">清华大学</div>
+      </div>
+      <div class="contact-box span2">
+        <div class="contact-icon">📍</div>
+        <div class="contact-label" data-zh="地址" data-en="Address">地址</div>
+        <div class="contact-val" data-zh="清华大学美术学院，北京市海淀区，中国" data-en="Academy of Arts & Design, Tsinghua University, Haidian, Beijing, China">清华大学美术学院，北京市海淀区，中国</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="container">
+    <p data-zh="© 2025 郝于越 · 清华大学美术学院" data-en="© 2025 Yuyue Hao · Academy of Arts & Design, Tsinghua University">
+      © 2025 郝于越 · 清华大学美术学院
+    </p>
+  </div>
+</footer>
+
+<script>
+  /* ── Language switch ── */
+  let lang = 'zh';
+  function setLang(l) {
+    lang = l;
+    document.documentElement.lang = l;
+    document.getElementById('btn-zh').classList.toggle('active', l === 'zh');
+    document.getElementById('btn-en').classList.toggle('active', l === 'en');
+    document.querySelectorAll('[data-zh][data-en]').forEach(el => {
+      el.innerHTML = el.getAttribute('data-' + l);
+    });
+    document.title = l === 'zh' ? '郝于越 | Yuyue Hao' : 'Yuyue Hao | 郝于越';
+  }
+
+  /* ── Publication filter ── */
+  function filterPubs(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.pub-item').forEach(item => {
+      item.style.display = (cat === 'all' || item.dataset.cat === cat) ? 'grid' : 'none';
+    });
+  }
+
+  /* ── Scholar stats static values ── */
+  document.getElementById('stat-citations').textContent = '111';
+  document.getElementById('stat-hindex').textContent    = '6';
+  document.getElementById('stat-i10').textContent       = '4';
+  document.querySelectorAll('.stat-value').forEach(el => el.classList.remove('loading'));
+
+  /* ── Active nav on scroll ── */
+  const allSections = document.querySelectorAll('section[id]');
+  const navAs = document.querySelectorAll('.nav-links a');
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        navAs.forEach(a => {
+          const active = a.getAttribute('href') === '#' + e.target.id;
+          a.style.color = active ? 'var(--c-text)' : '';
+        });
+      }
+    });
+  }, { rootMargin: '-30% 0px -60% 0px' });
+  allSections.forEach(s => io.observe(s));
+</script>
+</body>
+</html>
