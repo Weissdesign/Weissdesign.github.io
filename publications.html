@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>论文列表 | 郝于越</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --c-bg:       #ffffff;
+      --c-bg-alt:   #f5f5f7;
+      --c-border:   rgba(0,0,0,.08);
+      --c-text:     #1d1d1f;
+      --c-muted:    #6e6e73;
+      --c-subtle:   #86868b;
+      --c-accent:   #0071e3;
+      --nav-h:      52px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+      background: var(--c-bg); color: var(--c-text);
+      line-height: 1.75; font-size: 15px;
+      -webkit-font-smoothing: antialiased;
+    }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(0,0,0,.15); border-radius: 3px; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: var(--nav-h);
+      background: rgba(255,255,255,.82);
+      backdrop-filter: saturate(180%) blur(20px);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid rgba(0,0,0,.1);
+    }
+    .nav-inner {
+      max-width: 960px; margin: 0 auto; padding: 0 2rem;
+      height: 100%; display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-size: .88rem; font-weight: 600; color: var(--c-text);
+      letter-spacing: -.01em; text-decoration: none;
+    }
+    .nav-logo span { color: var(--c-accent); }
+    .nav-back {
+      font-size: .8rem; color: var(--c-muted); text-decoration: none;
+      display: inline-flex; align-items: center; gap: .35rem;
+      transition: color .15s;
+    }
+    .nav-back:hover { color: var(--c-accent); }
+    .nav-back svg { width: 14px; height: 14px; }
+
+    /* LAYOUT */
+    .container { max-width: 960px; margin: 0 auto; padding: 0 2rem; }
+    .page-header {
+      padding-top: calc(var(--nav-h) + 3.5rem);
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--c-border);
+    }
+    .sec-label {
+      display: block; font-size: .68rem; font-weight: 600;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--c-accent); margin-bottom: .6rem;
+    }
+    h1 {
+      font-size: 2rem; font-weight: 700; color: var(--c-text);
+      letter-spacing: -.03em; line-height: 1.2; margin-bottom: .5rem;
+    }
+    .pub-count { font-size: .85rem; color: var(--c-muted); }
+
+    /* FILTERS */
+    .pub-filters {
+      display: flex; gap: .4rem; flex-wrap: wrap;
+      padding: 1.6rem 0 1.2rem;
+      border-bottom: 1px solid var(--c-border);
+    }
+    .filter-btn {
+      padding: .3rem .85rem; border-radius: 999px; border: 1px solid var(--c-border);
+      font-size: .78rem; font-weight: 400; cursor: pointer;
+      background: var(--c-bg); color: var(--c-muted); font-family: inherit;
+      transition: all .2s;
+    }
+    .filter-btn:hover { background: rgba(0,113,227,.08); color: var(--c-accent); border-color: rgba(0,113,227,.2); }
+    .filter-btn.active { background: var(--c-accent); color: #fff; border-color: var(--c-accent); }
+
+    /* PUB LIST */
+    .pub-list { display: flex; flex-direction: column; padding-bottom: 4rem; }
+
+    .pub-item {
+      border-bottom: 1px solid var(--c-border);
+    }
+    .pub-item:last-child { border-bottom: none; }
+
+    .pub-summary {
+      display: grid;
+      grid-template-columns: 48px 1fr auto;
+      gap: 0 1rem;
+      align-items: center;
+      padding: 1.1rem 0;
+      cursor: pointer;
+      transition: background .15s;
+      border-radius: 10px;
+    }
+    .pub-summary:hover { background: var(--c-bg-alt); padding-left: .6rem; padding-right: .6rem; margin: 0 -.6rem; }
+
+    .pub-idx {
+      font-size: .72rem; color: var(--c-subtle);
+      font-variant-numeric: tabular-nums; font-weight: 500;
+    }
+    .pub-title-text {
+      font-size: .92rem; font-weight: 500; color: var(--c-text);
+      line-height: 1.5;
+    }
+    .pub-year-pill {
+      font-size: .72rem; color: var(--c-subtle);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap; padding-left: .5rem;
+    }
+    .pub-chevron {
+      display: inline-block; width: 14px; height: 14px;
+      color: var(--c-subtle); flex-shrink: 0;
+      transition: transform .25s; margin-left: .6rem;
+    }
+    .pub-item.open .pub-chevron { transform: rotate(180deg); }
+
+    /* DETAIL PANEL */
+    .pub-detail {
+      display: none;
+      background: var(--c-bg-alt);
+      border-radius: 12px;
+      padding: 1.4rem 1.6rem;
+      margin: 0 0 1rem;
+      font-size: .88rem;
+      line-height: 1.8;
+    }
+    .pub-item.open .pub-detail { display: block; }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: .35rem 1rem;
+    }
+    .detail-label {
+      font-size: .72rem; font-weight: 600; letter-spacing: .06em;
+      text-transform: uppercase; color: var(--c-subtle);
+      padding-top: .1rem;
+    }
+    .detail-value { color: var(--c-text); }
+    .detail-value a { color: var(--c-accent); text-decoration: none; }
+    .detail-value a:hover { text-decoration: underline; }
+    .detail-tags { display: flex; flex-wrap: wrap; gap: .3rem; }
+    .pub-tag {
+      font-size: .7rem; padding: .18rem .55rem;
+      background: rgba(0,113,227,.08); color: var(--c-accent);
+      border-radius: 999px; font-weight: 400;
+    }
+    .detail-abstract { color: var(--c-muted); font-style: italic; }
+
+    .collapse-btn {
+      margin-top: 1rem;
+      display: inline-flex; align-items: center; gap: .3rem;
+      font-size: .75rem; color: var(--c-muted); cursor: pointer;
+      background: none; border: none; font-family: inherit;
+      padding: 0; transition: color .15s;
+    }
+    .collapse-btn:hover { color: var(--c-text); }
+
+    @media (max-width: 640px) {
+      .pub-summary { grid-template-columns: 36px 1fr auto; }
+      h1 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">Yuyue <span>Hao</span></a>
+    <a class="nav-back" href="index.html#publications">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M10 3L5 8l5 5"/>
+      </svg>
+      返回主页
+    </a>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="page-header">
+    <p class="sec-label">学术成果</p>
+    <h1>论文列表</h1>
+    <p class="pub-count" id="pub-count"></p>
+  </div>
+
+  <div class="pub-filters">
+    <button class="filter-btn active" onclick="filterPubs('all',this)">全部</button>
+    <button class="filter-btn" onclick="filterPubs('hci',this)">HCI / AI</button>
+    <button class="filter-btn" onclick="filterPubs('emergency',this)">应急</button>
+    <button class="filter-btn" onclick="filterPubs('av',this)">自动驾驶</button>
+    <button class="filter-btn" onclick="filterPubs('biblio',this)">文献计量</button>
+  </div>
+
+  <div class="pub-list" id="pub-list"></div>
+</div>
+
+<script>
+  const PUB_DATA = [
+    {title:"The Double-Edged Sword of Artificial Empathy: User Resistance and Acceptance in Emotional vs. Functional Interactions",venue:"Interacting with Computers",year:2026,authors:"Yaqi Wang, Yuyue Hao*",index:"SCIE",tags:["人工共情","情感服务","用户抵制"],doi:"https://doi.org/10.1093/iwc/iwag020",cat:"hci"},
+    {title:"风险感知与恐惧情绪：面向风险情绪的设计干预路径研究",venue:"工业工程设计",year:2026,authors:"郝于越，王亚琦*",index:"CSSCI",tags:["风险感知","风险情绪"],doi:"",cat:"emergency"},
+    {title:"Social norms or individual experience? Which affects individual risk perception of disaster warnings",venue:"Safety Science",year:2025,authors:"Yuyue Hao, Shenglan Peng*",index:"SCIE",tags:["灾害预警","响应行为","风险感知"],doi:"https://doi.org/10.1016/j.ssci.2025.107074",cat:"emergency"},
+    {title:"Global evolution of research on life cycle assessment: A data-driven visualization of collaboration, frontier identification, and future trend",venue:"Environmental Impact Assessment Review",year:2025,authors:"Jialing Li, Jiaqi Wang, Yuyue Hao, Hao Tan, Binbin Shao, Chen Zhang",index:"SCIE",tags:["文献计量","生命周期"],doi:"https://doi.org/10.1016/j.eiar.2025.108093",cat:"biblio"},
+    {title:"The effects of warning design features on risk perception and performance in remote emergency response",venue:"Scientific Reports",year:2025,authors:"Yuyue Hao, Yaqi Wang*",index:"SCIE",tags:["灾害预警","信息设计","风险感知"],doi:"https://doi.org/10.1038/s41598-025-10872-8",cat:"emergency"},
+    {title:"How warning content and persuasive strategy influence risk perception in remote fire monitoring: An empirical study",venue:"Displays",year:2025,authors:"Yuyue Hao*, Hao Tan, Ruilin Ouyang",index:"SCIE",tags:["信息界面","风险感知"],doi:"https://doi.org/10.1016/j.displa.2025.103140",cat:"emergency"},
+    {title:"Meta-analyses of motivational factors of response to natural disaster",venue:"Journal of Environmental Management",year:2023,authors:"Hao Tan, Yuyue Hao*, Jiawei Yang, Chao Tang",index:"SCIE;SSCI",tags:["元分析","自然灾害","响应行为"],doi:"https://doi.org/10.1016/j.jenvman.2023.119723",cat:"emergency"},
+    {title:"How does people's trust in automated vehicles change after automation errors occur? An empirical study on dynamic trust in automated driving",venue:"Human Factors and Ergonomics in Manufacturing & Service Industries",year:2023,authors:"Hao Tan, Yuyue Hao*",index:"SCIE;SSCI",tags:["自动驾驶","信任感"],doi:"https://doi.org/10.1002/hfm.21001",cat:"av"},
+    {title:"Mapping the global evolution and research directions of information seeking, sharing and communication in disasters: a bibliometric study",venue:"International Journal of Environmental Research and Public Health",year:2022,authors:"Hao Tan, Yuyue Hao*",index:"SCIE;SSCI",tags:["文献计量","信息行为"],doi:"https://doi.org/10.3390/ijerph192214878",cat:"biblio"},
+    {title:"How people perceive and expect safety in autonomous vehicles: An empirical study for risk sensitivity and risk-related feelings",venue:"International Journal of Human–Computer Interaction",year:2021,authors:"Hao Tan, Cong Chen, Yuyue Hao",index:"SCIE;SSCI",tags:["感知安全","自动驾驶"],doi:"https://doi.org/10.1080/10447318.2020.1860515",cat:"av"},
+    {title:"A bibliometric analysis and social network analysis on ergonomics studies of emergency equipment",venue:"HCI International 2020",year:2020,authors:"Hao Tan, Yuyue Hao, Aobo Sun, Xiuyuan Guo, Dongdong Guo",index:"EI",tags:["文献计量","应急装备"],doi:"https://doi.org/10.1007/978-3-030-59987-4_40",cat:"biblio"},
+    {title:"自主传播环境下交互视觉体验的设计研究",venue:"包装工程",year:2018,authors:"谌涛，郝于越",index:"北大核心",tags:["交互体验"],doi:"",cat:"hci"},
+    {title:"移动智能产品设计用户体验模型研究",venue:"设计",year:2018,authors:"郝于越",index:"AMI",tags:["用户体验","智能产品"],doi:"",cat:"hci"}
+  ];
+
+  let currentCat = 'all';
+
+  function renderPubs(cat) {
+    currentCat = cat;
+    const list = document.getElementById('pub-list');
+    const filtered = cat === 'all' ? PUB_DATA : PUB_DATA.filter(p => p.cat === cat);
+    document.getElementById('pub-count').textContent = `共 ${filtered.length} 篇`;
+
+    list.innerHTML = filtered.map((p, i) => {
+      const doiHtml = p.doi
+        ? `<a href="${p.doi}" target="_blank" rel="noopener">${p.doi}</a>`
+        : '<span style="color:var(--c-subtle)">—</span>';
+      const tagsHtml = p.tags.map(t => `<span class="pub-tag">${t}</span>`).join('');
+      return `
+      <div class="pub-item" id="pub-${i}">
+        <div class="pub-summary" onclick="togglePub(${i})">
+          <div class="pub-idx">#${String(i+1).padStart(2,'0')}</div>
+          <div class="pub-title-text">${p.title}</div>
+          <div style="display:flex;align-items:center;flex-shrink:0;">
+            <span class="pub-year-pill">${p.year}</span>
+            <svg class="pub-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M4 6l4 4 4-4"/>
+            </svg>
+          </div>
+        </div>
+        <div class="pub-detail">
+          <div class="detail-grid">
+            <span class="detail-label">出版物</span>
+            <span class="detail-value">${p.venue}</span>
+            <span class="detail-label">年份</span>
+            <span class="detail-value">${p.year}</span>
+            <span class="detail-label">作者</span>
+            <span class="detail-value">${p.authors}</span>
+            <span class="detail-label">索引</span>
+            <span class="detail-value">${p.index}</span>
+            <span class="detail-label">标签</span>
+            <span class="detail-value"><div class="detail-tags">${tagsHtml}</div></span>
+            <span class="detail-label">DOI</span>
+            <span class="detail-value">${doiHtml}</span>
+          </div>
+          <button class="collapse-btn" onclick="togglePub(${i})">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M4 10l4-4 4 4"/>
+            </svg>
+            收起
+          </button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function togglePub(i) {
+    const el = document.getElementById('pub-' + i);
+    const isOpen = el.classList.contains('open');
+    document.querySelectorAll('.pub-item.open').forEach(item => item.classList.remove('open'));
+    if (!isOpen) el.classList.add('open');
+  }
+
+  function filterPubs(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderPubs(cat);
+  }
+
+  renderPubs('all');
+</script>
+</body>
+</html>
