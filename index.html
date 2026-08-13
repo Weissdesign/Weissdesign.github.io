@@ -102,8 +102,8 @@
 
     /* ── HERO ── */
     #hero {
-      min-height: 100vh; display: flex; align-items: center;
-      padding-top: calc(var(--nav-h) + 4rem);
+      display: flex;
+      padding: calc(var(--nav-h) + 4rem) 0 2.5rem;
       background: var(--c-bg);
     }
     .hero-grid {
@@ -261,6 +261,11 @@
     .filter-btn.active { background: var(--c-accent); color: #fff; }
 
     .pub-list { display: flex; flex-direction: column; }
+    .pub-status {
+      padding: 1.6rem 0; color: var(--c-muted); font-size: .84rem;
+      font-weight: 300;
+    }
+    .pub-status-error { color: #b42318; }
     .more-link {
       font-size: .82rem; font-weight: 500; color: var(--c-accent);
       text-decoration: none; white-space: nowrap; flex-shrink: 0;
@@ -300,61 +305,116 @@
     }
 
     /* ── EDUCATION ── */
-    .timeline { position: relative; padding-left: 2rem; }
+    .timeline-scroll {
+      overflow-x: auto; overflow-y: hidden;
+      padding: .25rem 0 1rem;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(0,0,0,.14) transparent;
+    }
+    .timeline {
+      --timeline-column-width: 320px;
+      --timeline-period-height: 31px;
+      --timeline-period-gap: 1rem;
+      --timeline-dot-size: 11px;
+      position: relative;
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: var(--timeline-column-width);
+      width: max-content;
+      min-width: calc(var(--timeline-column-width) * 2);
+    }
     .timeline::before {
-      content: ''; position: absolute; left: 5px; top: 6px; bottom: 6px;
-      width: 1px; background: var(--c-border);
+      content: ''; position: absolute;
+      left: calc(var(--timeline-column-width) / 2);
+      right: calc(var(--timeline-column-width) / 2);
+      top: calc(var(--timeline-period-height) + var(--timeline-period-gap) + var(--timeline-dot-size) / 2);
+      height: 1px;
+      background: #e2e2e5;
     }
-    .tl-item { position: relative; padding-bottom: 2.5rem; }
-    .tl-item:last-child { padding-bottom: 0; }
+    .tl-item {
+      position: relative; min-width: 0;
+      padding: 0 clamp(1rem, 3vw, 2.5rem);
+      text-align: center;
+    }
+    .tl-period {
+      height: var(--timeline-period-height); margin-bottom: var(--timeline-period-gap);
+      font-size: .74rem; font-weight: 500; color: var(--c-accent);
+      letter-spacing: .04em; font-variant-numeric: tabular-nums;
+    }
     .tl-dot {
-      position: absolute; left: -2rem; top: 5px;
-      width: 10px; height: 10px; border-radius: 50%;
+      position: relative; z-index: 2; margin: 0 auto 1.15rem;
+      width: var(--timeline-dot-size); height: var(--timeline-dot-size); border-radius: 50%;
       background: var(--c-accent); border: 2px solid var(--c-bg);
-      box-shadow: 0 0 0 3px rgba(0,113,227,.2);
+      box-shadow: 0 0 0 4px rgba(0,113,227,.14);
     }
-    .tl-period { font-size: .72rem; font-weight: 500; color: var(--c-accent); letter-spacing: .04em; margin-bottom: .3rem; }
-    .tl-degree { font-size: 1rem; font-weight: 600; color: var(--c-text); margin-bottom: .15rem; letter-spacing: -.01em; }
+    .tl-logo-wrap {
+      width: 78px; height: 78px; margin: 0 auto .2rem;
+      display: flex; align-items: center; justify-content: center;
+      border: none; border-radius: 50%;
+      background: transparent; box-shadow: none;
+    }
+    .tl-logo {
+      width: 62px; height: 62px; object-fit: contain; border-radius: 50%;
+      display: block;
+    }
+    .tl-logo-hnu { width: 50px; height: 50px; }
+    .tl-degree {
+      font-size: 1rem; font-weight: 600; color: var(--c-text);
+      margin-bottom: .2rem; letter-spacing: -.01em;
+    }
     .tl-school { font-size: .83rem; color: var(--c-muted); font-weight: 300; }
 
     /* ── PROJECTS ── */
-    .project-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .8rem; }
+    .project-grid {
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.5rem;
+    }
     .project-card {
-      background: var(--c-surface); border-radius: 0;
-      overflow: hidden; transition: all .3s cubic-bezier(.4,0,.2,1);
+      background: var(--c-bg-alt); border: 1px solid rgba(0,0,0,.08);
+      border-radius: 18px; overflow: hidden;
+      box-shadow: 0 3px 14px rgba(0,0,0,.05);
+      transition: transform .35s cubic-bezier(.2,.8,.2,1),
+                  box-shadow .35s cubic-bezier(.2,.8,.2,1),
+                  border-color .35s ease;
       display: flex; flex-direction: column;
     }
-    .project-card:hover { transform: scale(1.02) translateY(-3px); }
-    .project-img { width: 100%; height: 240px; object-fit: cover; display: block; flex-shrink: 0; }
-    .project-body { padding: 1.1rem 1.2rem 1.4rem; display: flex; flex-direction: column; gap: .4rem; flex: 1; }
+    .project-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(0,113,227,.16);
+      box-shadow: 0 18px 42px rgba(0,0,0,.13);
+    }
+    .project-media { aspect-ratio: 16 / 10; overflow: hidden; background: #e8e8ed; }
+    .project-img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      transition: transform .55s cubic-bezier(.2,.8,.2,1);
+    }
+    .project-card:hover .project-img { transform: scale(1.045); }
+    .project-body {
+      padding: 1.35rem 1.4rem 1.55rem;
+      display: flex; flex-direction: column; flex: 1;
+    }
+    .project-meta {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; margin-bottom: .8rem;
+    }
     .project-fund {
-      font-size: .67rem; font-weight: 600; letter-spacing: .05em;
+      font-size: .67rem; font-weight: 600; letter-spacing: .09em;
       color: var(--c-accent);
       display: inline-block; width: fit-content;
       text-transform: uppercase;
     }
-    .project-title { font-weight: 500; font-size: .86rem; line-height: 1.5; color: var(--c-text); letter-spacing: -.01em; }
-    .project-date { font-size: .75rem; color: var(--c-muted); margin-top: auto; font-weight: 300; }
-
-    /* ── CONTACT ── */
-    .contact-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr);
-      background: var(--c-border); border-radius: var(--r); overflow: hidden;
+    .project-date {
+      font-size: .7rem; color: var(--c-subtle); white-space: nowrap;
+      font-weight: 400; font-variant-numeric: tabular-nums;
     }
-    .contact-box {
-      padding: 1.6rem 1.8rem;
-      background: var(--c-bg);
-      border-right: 1px solid var(--c-border);
-      transition: background .15s;
+    .project-title {
+      font-weight: 600; font-size: 1.08rem; line-height: 1.45;
+      color: var(--c-text); letter-spacing: -.02em; margin-bottom: .65rem;
     }
-    .contact-box:last-child { border-right: none; }
-    .contact-box:hover { background: var(--c-bg-alt); }
-    .contact-box.span2 { grid-column: span 1; }
-    .contact-icon { font-size: 1.1rem; margin-bottom: .6rem; }
-    .contact-label { font-size: .65rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--c-subtle); margin-bottom: .3rem; }
-    .contact-val { font-size: .85rem; font-weight: 400; color: var(--c-text); }
-    .contact-val a { color: var(--c-accent); text-decoration: none; }
-    .contact-val a:hover { text-decoration: underline; }
+    .project-desc {
+      font-size: .8rem; line-height: 1.75; color: var(--c-muted);
+      font-weight: 300; margin-top: auto;
+    }
 
     /* ── FOOTER ── */
     footer {
@@ -370,12 +430,17 @@
       .hero-grid { grid-template-columns: 1fr; }
       .avatar-block { display: none; }
       .nav-links { display: none; }
-      .contact-grid { grid-template-columns: 1fr 1fr; }
-      .contact-box.span2 { grid-column: span 1; }
       .pub-item { grid-template-columns: 40px 1fr; }
       .pub-year-badge { display: none; }
-      .project-grid { grid-template-columns: repeat(2, 1fr); }
+      .project-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .area-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .project-grid { grid-template-columns: 1fr; }
+      .timeline {
+        --timeline-column-width: min(280px, 78vw);
+        min-width: max-content;
+      }
     }
   </style>
 </head>
@@ -393,7 +458,7 @@
         <li><a href="publications.html" data-zh="论文" data-en="Publications">论文</a></li>
         <li><a href="#projects"     data-zh="项目" data-en="Projects">项目</a></li>
         <li><a href="awards.html"   data-zh="获奖" data-en="Awards">获奖</a></li>
-        <li><a href="#contact"      data-zh="联系" data-en="Contact">联系</a></li>
+        <li><a href="contact.html"  data-zh="联系" data-en="Contact">联系</a></li>
       </ul>
       <div class="lang-toggle">
         <button class="lang-btn active" id="btn-zh" onclick="setLang('zh')">中文</button>
@@ -428,10 +493,7 @@
             <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>
             weissbj@mail.tsinghua.edu.cn
           </a>
-          <span class="chip">
-            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.86 19.86 0 0 1 3.08 4.18 2 2 0 0 1 5.09 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L9.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-            +86 185 1605 7821
-          </span>
+
         </div>
         <div class="kw-row">
           <span class="kw" data-zh="应急人类行为"  data-en="Emergency Human Behavior">应急人类行为</span>
@@ -509,18 +571,26 @@
   <div class="container">
     <p class="sec-label" data-zh="教育经历" data-en="Education">教育经历</p>
     <h2 class="section-title" data-zh="学术履历" data-en="Academic Career">学术履历</h2>
-    <div class="timeline">
-      <div class="tl-item">
-        <div class="tl-dot"></div>
-        <div class="tl-period">2025.01 — <span data-zh="至今" data-en="Present">至今</span></div>
-        <div class="tl-degree" data-zh="博士后研究员" data-en="Postdoctoral Researcher">博士后研究员</div>
-        <div class="tl-school" data-zh="清华大学美术学院" data-en="Academy of Arts & Design, Tsinghua University">清华大学美术学院</div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot"></div>
-        <div class="tl-period">2019.09 — 2024.07</div>
-        <div class="tl-degree" data-zh="设计学博士" data-en="Ph.D. in Design">设计学博士</div>
-        <div class="tl-school" data-zh="湖南大学设计艺术学院" data-en="School of Design, Hunan University">湖南大学设计艺术学院</div>
+    <div class="timeline-scroll" aria-label="学术履历时间轴">
+      <div class="timeline">
+        <article class="tl-item">
+          <div class="tl-period">2019.09 — 2024.07</div>
+          <div class="tl-dot" aria-hidden="true"></div>
+          <div class="tl-logo-wrap">
+            <img class="tl-logo tl-logo-hnu" src="images/schools/hnu-emblem.jpg" alt="湖南大学校徽" />
+          </div>
+          <div class="tl-degree" data-zh="设计学博士" data-en="Ph.D. in Design">设计学博士</div>
+          <div class="tl-school" data-zh="湖南大学设计艺术学院" data-en="School of Design, Hunan University">湖南大学设计艺术学院</div>
+        </article>
+        <article class="tl-item">
+          <div class="tl-period">2025.01 — <span data-zh="至今" data-en="Present">至今</span></div>
+          <div class="tl-dot" aria-hidden="true"></div>
+          <div class="tl-logo-wrap">
+            <img class="tl-logo" src="images/schools/tsinghua-emblem.jpg" alt="清华大学校徽" />
+          </div>
+          <div class="tl-degree" data-zh="博士后研究员" data-en="Postdoctoral Researcher">博士后研究员</div>
+          <div class="tl-school" data-zh="清华大学美术学院" data-en="Academy of Arts & Design, Tsinghua University">清华大学美术学院</div>
+        </article>
       </div>
     </div>
   </div>
@@ -583,66 +653,56 @@
     <h2 class="section-title" data-zh="科研项目" data-en="Selected Projects">科研项目</h2>
     <div class="project-grid">
       <div class="project-card">
-        <img class="project-img" src="images/project01.png" alt="project01" />
+        <div class="project-media">
+          <img class="project-img" src="images/project01.png" alt="中国艺术设计学生人工智能素养研究项目" />
+        </div>
         <div class="project-body">
-          <span class="project-fund" data-zh="清华大学攀峰工程" data-en="Tsinghua Peak Program">清华大学攀峰工程</span>
+          <div class="project-meta">
+            <span class="project-fund" data-zh="清华大学攀峰工程" data-en="Tsinghua Peak Program">清华大学攀峰工程</span>
+            <span class="project-date">2025.06</span>
+          </div>
           <div class="project-title" data-zh="中国艺术设计学生人工智能素养研究" data-en="AI Literacy Research for Art & Design Students in China">中国艺术设计学生人工智能素养研究</div>
-          <div class="project-date" data-zh="截止 2025 年 6 月" data-en="By June 2025">截止 2025 年 6 月</div>
+          <p class="project-desc" data-zh="面向中国艺术设计学生，研究人工智能素养的构成、现状与培养路径。" data-en="Examining the structure, current state, and development of AI literacy among art and design students in China.">面向中国艺术设计学生，研究人工智能素养的构成、现状与培养路径。</p>
         </div>
       </div>
       <div class="project-card">
-        <img class="project-img" src="images/project02.png" alt="project02" />
+        <div class="project-media">
+          <img class="project-img" src="images/project02.png" alt="智慧微型消防应急站关键技术研发项目" />
+        </div>
         <div class="project-body">
-          <span class="project-fund" data-zh="湖南省重点研发计划" data-en="Hunan Province Key R&D">湖南省重点研发计划</span>
+          <div class="project-meta">
+            <span class="project-fund" data-zh="湖南省重点研发计划" data-en="Hunan Province Key R&D">湖南省重点研发计划</span>
+            <span class="project-date">2023.03</span>
+          </div>
           <div class="project-title" data-zh="智慧微型消防应急站关键技术研发" data-en="Smart Micro Fire Emergency Station R&D">智慧微型消防应急站关键技术研发</div>
-          <div class="project-date" data-zh="截止 2023 年 3 月" data-en="By March 2023">截止 2023 年 3 月</div>
+          <p class="project-desc" data-zh="围绕社区消防应急场景，开展微型应急站的系统设计与关键技术研究。" data-en="Developing system design and key technologies for compact emergency stations in community fire-response scenarios.">围绕社区消防应急场景，开展微型应急站的系统设计与关键技术研究。</p>
         </div>
       </div>
       <div class="project-card">
-        <img class="project-img" src="images/project03.png" alt="project03" />
+        <div class="project-media">
+          <img class="project-img" src="images/project03.png" alt="智能网络运维用户体验设计研究项目" />
+        </div>
         <div class="project-body">
-          <span class="project-fund" data-zh="华为横向项目" data-en="Huawei Collaboration">华为横向项目</span>
+          <div class="project-meta">
+            <span class="project-fund" data-zh="华为横向项目" data-en="Huawei Collaboration">华为横向项目</span>
+            <span class="project-date">2021.12</span>
+          </div>
           <div class="project-title" data-zh="智能网络运维用户体验设计研究" data-en="UX Design for Intelligent Network Operations">智能网络运维用户体验设计研究</div>
-          <div class="project-date" data-zh="截止 2021 年 12 月" data-en="By December 2021">截止 2021 年 12 月</div>
+          <p class="project-desc" data-zh="针对智能网络运维工作流，研究复杂信息呈现与操作体验的优化方法。" data-en="Optimizing complex information presentation and interaction experience for intelligent network operations workflows.">针对智能网络运维工作流，研究复杂信息呈现与操作体验的优化方法。</p>
         </div>
       </div>
       <div class="project-card">
-        <img class="project-img" src="images/project04.png" alt="project04" />
-        <div class="project-body">
-          <span class="project-fund" data-zh="横向项目" data-en="Industry Collaboration">横向项目</span>
-          <div class="project-title" data-zh="汽车智能交互体验设计研究" data-en="In-Vehicle Intelligent Interaction Design">汽车智能交互体验设计研究</div>
-          <div class="project-date" data-zh="截止 2020 年 12 月" data-en="By December 2020">截止 2020 年 12 月</div>
+        <div class="project-media">
+          <img class="project-img" src="images/project04.png" alt="汽车智能交互体验设计研究项目" />
         </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══ CONTACT ══ -->
-<section id="contact">
-  <div class="container">
-    <p class="sec-label" data-zh="联系方式" data-en="Contact">联系方式</p>
-    <h2 class="section-title" data-zh="取得联系" data-en="Get in Touch">取得联系</h2>
-    <div class="contact-grid">
-      <div class="contact-box">
-        <div class="contact-icon">✉️</div>
-        <div class="contact-label" data-zh="电子邮箱" data-en="Email">电子邮箱</div>
-        <div class="contact-val"><a href="mailto:weissbj@mail.tsinghua.edu.cn">weissbj@mail.tsinghua.edu.cn</a></div>
-      </div>
-      <div class="contact-box">
-        <div class="contact-icon">📞</div>
-        <div class="contact-label" data-zh="联系电话" data-en="Phone">联系电话</div>
-        <div class="contact-val">+86 185 1605 7821</div>
-      </div>
-      <div class="contact-box">
-        <div class="contact-icon">🏛️</div>
-        <div class="contact-label" data-zh="工作单位" data-en="Institution">工作单位</div>
-        <div class="contact-val" data-zh="清华大学" data-en="Tsinghua University">清华大学</div>
-      </div>
-      <div class="contact-box span2">
-        <div class="contact-icon">📍</div>
-        <div class="contact-label" data-zh="地址" data-en="Address">地址</div>
-        <div class="contact-val" data-zh="清华大学美术学院，北京市海淀区，中国" data-en="Academy of Arts & Design, Tsinghua University, Haidian, Beijing, China">清华大学美术学院，北京市海淀区，中国</div>
+        <div class="project-body">
+          <div class="project-meta">
+            <span class="project-fund" data-zh="横向项目" data-en="Industry Collaboration">横向项目</span>
+            <span class="project-date">2020.12</span>
+          </div>
+          <div class="project-title" data-zh="汽车智能交互体验设计研究" data-en="In-Vehicle Intelligent Interaction Design">汽车智能交互体验设计研究</div>
+          <p class="project-desc" data-zh="探索智能汽车场景中的信息交互、用户体验及驾驶安全感知设计。" data-en="Exploring information interaction, user experience, and perceived-safety design in intelligent vehicle contexts.">探索智能汽车场景中的信息交互、用户体验及驾驶安全感知设计。</p>
+        </div>
       </div>
     </div>
   </div>
@@ -652,11 +712,13 @@
 <footer>
   <div class="container">
     <p data-zh="© 2025 郝于越 · 清华大学美术学院" data-en="© 2025 Yuyue Hao · Academy of Arts & Design, Tsinghua University">
-      © 2025 郝于越 · 清华大学美术学院
+      © 2026 郝于越 · 清华大学美术学院
     </p>
   </div>
 </footer>
 
+<script src="vendor/xlsx.full.min.js"></script>
+<script src="publications/publication-data.js"></script>
 <script>
   /* ── Language switch ── */
   let lang = 'zh';
@@ -671,47 +733,33 @@
     document.title = l === 'zh' ? '郝于越 | Yuyue Hao' : 'Yuyue Hao | 郝于越';
   }
 
-  /* ── Publication data (source: publist.xlsx) ── */
-  const PUB_DATA = [
-    {title:"Do people resist empathizing with AI? Effects of empathic characteristics in AI-based emotional service",venue:"International Journal of Human–Computer Interaction",year:2026,authors:"Yuyue Hao, Yuxin Sheng, Jie He, Siqian He, Zhiyong Fu*",index:"SCIE;SSCI",tags:["人工共情","情感服务","智能体设计"],doi:"https://doi.org/10.1080/10447318.2026.2712099",cat:"hci"},
-    {title:"The Double-Edged Sword of Artificial Empathy: User Resistance and Acceptance in Emotional vs. Functional Interactions",venue:"Interacting with Computers",year:2026,authors:"Yaqi Wang, Yuyue Hao*",index:"SCIE",tags:["人工共情","情感服务","用户抵制"],doi:"https://doi.org/10.1093/iwc/iwag020",cat:"hci"},
-    {title:"风险感知与恐惧情绪：面向风险情绪的设计干预路径研究",venue:"工业工程设计",year:2026,authors:"郝于越，王亚琦*",index:"CSSCI",tags:["风险感知","风险情绪"],doi:"",cat:"emergency"},
-    {title:"Social norms or individual experience? Which affects individual risk perception of disaster warnings",venue:"Safety Science",year:2025,authors:"Yuyue Hao, Shenglan Peng*",index:"SCIE",tags:["灾害预警","响应行为","风险感知"],doi:"https://doi.org/10.1016/j.ssci.2025.107074",cat:"emergency"},
-    {title:"Global evolution of research on life cycle assessment: A data-driven visualization of collaboration, frontier identification, and future trend",venue:"Environmental Impact Assessment Review",year:2025,authors:"Jialing Li, Jiaqi Wang, Yuyue Hao, Hao Tan, Binbin Shao, Chen Zhang",index:"SCIE",tags:["文献计量","生命周期"],doi:"https://doi.org/10.1016/j.eiar.2025.108093",cat:"biblio"},
-    {title:"The effects of warning design features on risk perception and performance in remote emergency response",venue:"Scientific Reports",year:2025,authors:"Yuyue Hao, Yaqi Wang*",index:"SCIE",tags:["灾害预警","信息设计","风险感知"],doi:"https://doi.org/10.1038/s41598-025-10872-8",cat:"emergency"},
-    {title:"How warning content and persuasive strategy influence risk perception in remote fire monitoring: An empirical study",venue:"Displays",year:2025,authors:"Yuyue Hao*, Hao Tan, Ruilin Ouyang",index:"SCIE",tags:["信息界面","风险感知"],doi:"https://doi.org/10.1016/j.displa.2025.103140",cat:"emergency"},
-    {title:"Meta-analyses of motivational factors of response to natural disaster",venue:"Journal of Environmental Management",year:2023,authors:"Hao Tan, Yuyue Hao*, Jiawei Yang, Chao Tang",index:"SCIE;SSCI",tags:["元分析","自然灾害","响应行为"],doi:"https://doi.org/10.1016/j.jenvman.2023.119723",cat:"emergency"},
-    {title:"How does people's trust in automated vehicles change after automation errors occur? An empirical study on dynamic trust in automated driving",venue:"Human Factors and Ergonomics in Manufacturing & Service Industries",year:2023,authors:"Hao Tan, Yuyue Hao*",index:"SCIE;SSCI",tags:["自动驾驶","信任感"],doi:"https://doi.org/10.1002/hfm.21001",cat:"av"},
-    {title:"Mapping the global evolution and research directions of information seeking, sharing and communication in disasters: a bibliometric study",venue:"International Journal of Environmental Research and Public Health",year:2022,authors:"Hao Tan, Yuyue Hao*",index:"SCIE;SSCI",tags:["文献计量","信息行为"],doi:"https://doi.org/10.3390/ijerph192214878",cat:"biblio"},
-    {title:"How people perceive and expect safety in autonomous vehicles: An empirical study for risk sensitivity and risk-related feelings",venue:"International Journal of Human–Computer Interaction",year:2021,authors:"Hao Tan, Cong Chen, Yuyue Hao",index:"SCIE;SSCI",tags:["感知安全","自动驾驶"],doi:"https://doi.org/10.1080/10447318.2020.1860515",cat:"av"},
-    {title:"A bibliometric analysis and social network analysis on ergonomics studies of emergency equipment",venue:"HCI International 2020",year:2020,authors:"Hao Tan, Yuyue Hao, Aobo Sun, Xiuyuan Guo, Dongdong Guo",index:"EI",tags:["文献计量","应急装备"],doi:"https://doi.org/10.1007/978-3-030-59987-4_40",cat:"biblio"},
-    {title:"自主传播环境下交互视觉体验的设计研究",venue:"包装工程",year:2018,authors:"谌涛，郝于越",index:"北大核心",tags:["交互体验"],doi:"",cat:"hci"},
-    {title:"移动智能产品设计用户体验模型研究",venue:"设计",year:2018,authors:"郝于越",index:"AMI",tags:["用户体验","智能产品"],doi:"",cat:"hci"}
-  ];
+  /* ── Publication data (loaded from publications/publist.xlsx) ── */
+  let PUB_DATA = [];
 
   function renderPubs(cat) {
     const list = document.getElementById('pub-list');
     const all = cat === 'all' ? PUB_DATA : PUB_DATA.filter(p => p.cat === cat);
     const filtered = all.slice(0, 10);
     list.innerHTML = filtered.map((p, i) => {
-      const titleHtml = p.title;
-      const tagsHtml = p.tags.map(t => `<span class="pub-tag">${t}</span>`).join('');
+      const titleHtml = PublicationData.escapeHtml(p.title);
+      const venueHtml = PublicationData.escapeHtml(p.venue);
+      const yearHtml = PublicationData.escapeHtml(p.year);
+      const tagsHtml = p.tags.map(t => `<span class="pub-tag">${PublicationData.escapeHtml(t)}</span>`).join('');
       return `
       <div class="pub-item" data-cat="${p.cat}">
         <div class="pub-idx">#${String(i+1).padStart(2,'0')}</div>
         <div class="pub-body">
           <div class="pub-title">${titleHtml}</div>
           <div class="pub-meta">
-            <span class="pub-venue">${p.venue}</span>
+            <span class="pub-venue">${venueHtml}</span>
             <span class="pub-sep">·</span>
             <span class="pub-tags">${tagsHtml}</span>
           </div>
         </div>
-        <div class="pub-year-badge">${p.year}</div>
+        <div class="pub-year-badge">${yearHtml}</div>
       </div>`;
     }).join('');
   }
-  renderPubs('all');
 
   /* ── Publication filter ── */
   function filterPubs(cat, btn) {
@@ -720,10 +768,24 @@
     renderPubs(cat);
   }
 
+  async function initializePublications() {
+    const list = document.getElementById('pub-list');
+    list.innerHTML = '<p class="pub-status" data-zh="正在加载论文…" data-en="Loading publications…">正在加载论文…</p>';
+    try {
+      PUB_DATA = await PublicationData.load('publications/publist.xlsx');
+      renderPubs('all');
+    } catch (error) {
+      console.error(error);
+      list.innerHTML = `<p class="pub-status pub-status-error">${PublicationData.escapeHtml(error.message || '论文清单加载失败')}</p>`;
+    }
+  }
+
+  initializePublications();
+
   /* ── Scholar stats static values ── */
-  document.getElementById('stat-citations').textContent = '124';
+  document.getElementById('stat-citations').textContent = '129';
   document.getElementById('stat-hindex').textContent    = '6';
-  document.getElementById('stat-i10').textContent       = '4';
+  document.getElementById('stat-i10').textContent       = '5';
   document.querySelectorAll('.stat-value').forEach(el => el.classList.remove('loading'));
 
   /* ── Active nav on scroll ── */
